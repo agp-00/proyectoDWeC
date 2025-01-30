@@ -27,7 +27,7 @@ export default function Sidebar({ onApplyFilters }) {
   };
 
   return (
-    <div className="w-64 p-4 bg-gray-800 text-white mt-16 sticky top-0 h-full"> {/* Agregué sticky y h-full */}
+    <div className="w-64 p-4 bg-gray-800 text-white mt-16 sticky top-0 h-screen"> {/* Cambié h-full a h-screen */}
       <h2 className="text-lg font-bold mb-4">Filtros</h2>
 
       <div className="mb-4">

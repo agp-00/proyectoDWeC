@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import Carousel from "../components/Carousel";
+import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import SpaceList from "../components/SpaceList";
 
@@ -24,12 +24,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 w-full">
       <Header />
+      <Navbar />
       <main className="flex w-full h-full">
         <Sidebar onApplyFilters={handleApplyFilters} />
         <div className="flex-1 p-8 w-full h-full">
+          {/* Contenedor del input de búsqueda */}
+          <div className="h-64 flex-1 mx-4 flex items-center">
+            <input
+              type="text"
+              placeholder="Buscar espacios..."
+              className="w-full px-4 py-2 rounded-full bg-gray-700 text-white focus:outline-none"
+            />
+          </div>
           {/* Contenedor del carousel y la lista de espacios */}
-          <div className="w-full">
-            <Carousel />
+          <div className="w-full justify-center items-center flex">
             <SpaceList spaces={spaces} />
           </div>
         </div>
