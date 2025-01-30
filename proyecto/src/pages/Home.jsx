@@ -1,25 +1,36 @@
-function Home() {
-  return (
-    <div className="container-fluid bg-primary py-5 mb-5 hero-header">
-    <div className="container py-5">
-        <div className="row justify-content-start">
-            <div className="col-lg-8 text-center text-lg-start">
-                <h1 className="font-secondary text-primary mb-4">Super Crispy</h1>
-                <h1 className="display-1 text-uppercase text-white mb-4">CakeZone</h1>
-                <h1 className="text-uppercase text-white">The Best Cake In London</h1>
-                <div className="d-flex align-items-center justify-content-center justify-content-lg-start pt-5">
-                    <a href="" className="btn btn-primary border-inner py-3 px-5 me-5">Read More</a>
-                    <button type="button" className="btn-play" data-bs-toggle="modal"
-                        data-src="https://www.youtube.com/embed/DWRcNpR6Kdc" data-bs-target="#videoModal">
-                        <span></span>
-                    </button>
-                    <h5 className="font-weight-normal text-white m-0 ms-4 d-none d-sm-block">Play Video</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-  );
-}
+import { useState, useEffect } from 'react';
+import Header from '../components/Header';
+import Carousel from '../components/Carousel';
+import Sidebar from '../components/Sidebar';
+import SpaceList from '../components/SpaceList';
 
-export default Home;
+export default function Home() {
+    const [spaces, setSpaces] = useState([]);
+
+    useEffect(() => {
+        // Aquí puedes cargar los datos de los espacios desde tu backend
+        setSpaces([
+            { id: 1, name: 'Espacio 1', type: 'Artístico', rating: 4.5, commentsCount: 10 },
+            { id: 2, name: 'Espacio 2', type: 'Diseño', rating: 4.2, commentsCount: 5 },
+            { id: 3, name: 'Espacio 3', type: 'Cultural', rating: 4.8, commentsCount: 20 },
+        ]);
+    }, []);
+
+    const handleApplyFilters = () => {
+        // Aquí iría la lógica para aplicar filtros
+        console.log('Filtros aplicados');
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-100">
+            <Header />
+            <main className="flex">
+                <Sidebar onApplyFilters={handleApplyFilters} />
+                <div className="flex-1 p-8">
+                    <Carousel />
+                    <SpaceList spaces={spaces} />
+                </div>
+            </main>
+        </div>
+    );
+}

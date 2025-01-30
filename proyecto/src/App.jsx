@@ -1,19 +1,11 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Services from "./pages/Services";
-import Contact from "./pages/Contact";
+import React from 'react';
+import Home from './pages/Home';  // Importa la página Home
 
 function App() {
   return (
-    <>
-      <div>
-        <Navbar />
-
-      </div>
-    </>
+    <div className="App">
+      <Home />  {/* Aquí se renderiza la página principal */}
+    </div>
   );
 }
 
