@@ -1,4 +1,3 @@
-import React from 'react';
 import Home from './pages/Home';  // Importa la página Home
 
 function App() {
