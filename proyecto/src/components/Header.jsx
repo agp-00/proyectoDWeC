@@ -43,7 +43,7 @@ export default function Header() {
             <button onClick={toggleDropdown} className="w-10 h-10 rounded-full overflow-hidden">
               {/* Bandera del idioma seleccionado */}
               <img
-                src={`https://flagcdn.com/w20/${selectedLanguage}.png`} // Cambia según el idioma seleccionado
+                src={`https://flagcdn.com/w20/${selectedLanguage}.svg`} // Cambia según el idioma seleccionado
                 alt="Idioma"
                 className="w-full h-full object-cover"
               />
@@ -60,7 +60,7 @@ export default function Header() {
                     Español
                   </li>
                   <li
-                    onClick={() => handleLanguageChange("ca")}
+                    onClick={() => handleLanguageChange("es-ca")}
                     className="px-4 py-2 hover:bg-gray-600 cursor-pointer"
                   >
                     Catalán
