@@ -3,11 +3,22 @@
 @tailwind utilities;
 
 
-#root {
+html, body, #root {
+  height: 100%;
   max-width: none;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1; /* Hace que el contenido principal ocupe el espacio disponible */
 }
 
 .logo {

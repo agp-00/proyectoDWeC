@@ -58,9 +58,11 @@ export default function Header() {
         {/* Botón Login/Logout */}
         <div className="flex items-center space-x-6 ml-6">
           <i className="fas fa-user text-white"></i>
-          <button onClick={handleLoginLogout} className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none">
-            {isLoggedIn ? "Cerrar sesión" : "Iniciar sesión"}
-          </button>
+          <Link to="/login">
+            <button className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none">
+              Iniciar sesión
+            </button>
+          </Link>
         </div>
       </div>
 
