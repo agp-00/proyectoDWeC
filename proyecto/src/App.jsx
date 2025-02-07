@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginForm from "./components/LoginForm";
 import { AuthProvider } from './hooks/AuthContext';  // Importar AuthProvider
 
 // Definir las páginas de tu aplicación
@@ -9,6 +8,7 @@ import Espacios from "./pages/Espacios"; // Página de espacios
 import Comentarios from "./pages/Comentarios"; // Página de servicios
 import Contacto from "./pages/Contacto"; // Página de contacto
 import Footer from "./components/Footer";
+import Login from "./pages/Login"; // Página de login
 
 // Definir el componente App con las rutas
 function App() {
@@ -17,7 +17,7 @@ function App() {
       <BrowserRouter basename="/">
         <div className="App">
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<Home />} />
             <Route path="/espacios" element={<Espacios />} />
             <Route path="/comentarios" element={<Comentarios />} />
