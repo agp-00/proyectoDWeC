@@ -4,10 +4,10 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 export default function SpaceList({ spaces: propSpaces }) {
   const { spaces: fetchedSpaces, loading, error } = useFetchSpaces();
-  const spaces = Array.isArray(propSpaces) && propSpaces.length 
-    ? propSpaces 
-    : Array.isArray(fetchedSpaces) 
-      ? fetchedSpaces 
+  const spaces = Array.isArray(propSpaces) && propSpaces.length
+    ? propSpaces
+    : Array.isArray(fetchedSpaces)
+      ? fetchedSpaces
       : []; // ✅ Asegura que siempre sea un array
 
   console.log("Espacios obtenidos:", spaces); // 🔍 Debug
@@ -72,8 +72,14 @@ export default function SpaceList({ spaces: propSpaces }) {
       {/* Grid de espacios */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentSpaces.map((space) => {
-          const averageRating = space.countScore > 0 ? space.totalScore / space.countScore : 0;
-
+          console.log("Espacio recibido:", space);
+          console.log("Total Score:", space?.totalScore);
+          console.log("Count Score:", space?.countScore);
+          
+          const totalScore = Number(space?.totalScore) || 0;
+          const countScore = Number(space?.countScore) || 0;
+          const averageRating = countScore > 0 ? totalScore / countScore : 0;
+          
           return (
             <div key={space.id} className="border rounded-md p-4 bg-white shadow-sm">
               <img
@@ -82,7 +88,6 @@ export default function SpaceList({ spaces: propSpaces }) {
                 className="w-full h-48 object-cover rounded-md mb-4"
               />
               <h3 className="text-xl font-semibold">{space.nom}</h3>
-              <p>{space.municipi}</p> { /* cogerlo de otra tabla no funciona por ahora */}
               <p>{space.tipus}</p>
               {renderStars(averageRating)}
             </div>
@@ -106,9 +111,8 @@ export default function SpaceList({ spaces: propSpaces }) {
             onClick={() => {
               if (page !== "...") setCurrentPage(page);
             }}
-            className={`px-4 py-2 rounded ${
-              page === currentPage ? "bg-blue-500 text-white font-bold" : "bg-gray-300 text-gray-700"
-            }`}
+            className={`px-4 py-2 rounded ${page === currentPage ? "bg-blue-500 text-white font-bold" : "bg-gray-300 text-gray-700"
+              }`}
           >
             {page}
           </button>
