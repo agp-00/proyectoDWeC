@@ -7,15 +7,39 @@ const useFetchSpaces = () => {
 
   useEffect(() => {
     const fetchSpaces = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const response = await fetch("http://baleart.test/api/space");
+        const token = localStorage.getItem("auth_token"); // ✅ Obtiene el token de autenticación
+        if (!token) {
+          throw new Error(" Necesitas hacer login para ver este contenido.");
+        }
+
+        const response = await fetch("http://baleart.test/api/space", {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Agrega el token al header
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 401) {
+          throw new Error("No autorizado. Verifica tu sesión.");
+        }
+
         if (!response.ok) {
           throw new Error("No se pudieron obtener los espacios.");
         }
+
         const data = await response.json();
-        setSpaces(data); // Guarda los espacios recibidos
+        console.log("Datos recibidos de la API:", data); // 🔍 Debug
+
+        // ✅ Si la API devuelve `{ data: [...] }`, ajustamos la asignación
+        setSpaces(Array.isArray(data.data) ? data.data : []);
       } catch (error) {
+        console.error("Error al obtener espacios:", error);
         setError(error.message);
+        setSpaces([]); // ✅ Asegura que siempre se retorne un array
       } finally {
         setLoading(false);
       }

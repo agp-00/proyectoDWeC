@@ -1,26 +1,71 @@
 import { useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import SpaceList from "../components/SpaceList";
+import Header from "../components/Header";
+import Navbar from "../components/Navbar";
 
-export default function Home({ onSearch }) {
+export default function Espacios() {
   const [spaces, setSpaces] = useState([]);
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState({
+    island: "",
+    municipality: "",
+    modality: "",
+    service: "",
+    spaceType: "",
+  });
+
+  // Obtener el token desde localStorage o sessionStorage
+  const token = localStorage.getItem("token"); // O usa sessionStorage si lo guardas allí
+
+  // Función para aplicar filtros desde Sidebar
+  const handleApplyFilters = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  // Función de búsqueda
   const handleSearch = () => {
-    onSearch(query); // Llama a la función de búsqueda
+    if (query === "") return; // No hacer nada si el campo de búsqueda está vacío
+    const filteredSpaces = spaces.filter((space) =>
+      space.nom.toLowerCase().includes(query.toLowerCase())
+    );
+    setSpaces(filteredSpaces);
   };
 
   useEffect(() => {
-    // Aquí puedes cargar los datos de los espacios desde tu backend
+    // Obtener los espacios desde la API
+    const applyFilters = async () => {
+      const filterParams = new URLSearchParams();
 
-  }, []);
+      // Agregar los filtros a los parámetros de la URL solo si no están vacíos
+      if (filters.island) filterParams.append("island", filters.island);
+      if (filters.municipality) filterParams.append("municipality", filters.municipality);
+      if (filters.modality) filterParams.append("modality", filters.modality);
+      if (filters.service) filterParams.append("service", filters.service);
+      if (filters.spaceType) filterParams.append("spaceType", filters.spaceType);
 
-  const handleApplyFilters = () => {
-    // Aquí iría la lógica para aplicar filtros
-    console.log("Filtros aplicados");
-  };
+      try {
+        const response = await fetch(`http://baleart.test/api/space?${filterParams.toString()}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, // Agregar el token aquí
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al obtener los espacios: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setSpaces(data); // Asegúrate de que los datos recibidos son correctos
+      } catch (error) {
+        console.error("Error al aplicar los filtros", error);
+      }
+    };
+
+    applyFilters();
+  }, [filters, token]); // Ejecutamos cuando los filtros cambian o el token cambia
 
   return (
     <div className="min-h-screen bg-gray-100 w-full">
@@ -28,12 +73,14 @@ export default function Home({ onSearch }) {
         <Header />
       </div>
 
-      {/* NAVBAR Sticky debajo del header */}
       <div className="sticky top-[60px] z-40 bg-white shadow-sm">
         <Navbar />
       </div>
+
       <main className="flex w-full h-full">
-          <Sidebar onApplyFilters={handleApplyFilters}/>
+        {/* Sidebar con filtros */}
+        <Sidebar onApplyFilters={handleApplyFilters} />
+
         <div className="flex-1 p-8 w-full h-full">
           {/* Contenedor del input de búsqueda */}
           <div className="h-min flex items-center mx-4 w-full relative">
@@ -42,20 +89,13 @@ export default function Home({ onSearch }) {
               placeholder="Buscar espacios..."
               className="w-full px-4 py-2 rounded-full bg-gray-700 text-white focus:outline-none pr-10"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onClick={(e) => e.key === "Enter" && handleSearch()} // Buscar al presionar Enter
+              onChange={(e) => setQuery(e.target.value)} // Actualiza el estado correctamente
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()} // Buscar al presionar Enter
             />
-            <button
-              onClick={handleSearch}
-              className="absolute right-5 text-white"
-            >
-              <FiSearch size={20} />
-            </button>
           </div>
 
-          <div className="w-full h-80 justify-center items-center flex">
-            <SpaceList spaces={spaces} />
-          </div>
+          {/* Mostrar la lista de espacios filtrados */}
+          <SpaceList spaces={spaces} />
         </div>
       </main>
     </div>

@@ -4,18 +4,24 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 export default function SpaceList({ spaces: propSpaces }) {
   const { spaces: fetchedSpaces, loading, error } = useFetchSpaces();
-  const spaces = propSpaces?.length ? propSpaces : fetchedSpaces; // ✅ Evita conflicto de nombres
+  const spaces = Array.isArray(propSpaces) && propSpaces.length 
+    ? propSpaces 
+    : Array.isArray(fetchedSpaces) 
+      ? fetchedSpaces 
+      : []; // ✅ Asegura que siempre sea un array
+
+  console.log("Espacios obtenidos:", spaces); // 🔍 Debug
 
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(spaces.length / itemsPerPage);
+  const totalPages = Math.ceil(spaces.length / itemsPerPage) || 1; // ✅ Evita dividir por 0
 
   if (loading) return <p>Cargando espacios...</p>;
   if (error) return <p>Error: {error}</p>;
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentSpaces = spaces.slice(startIndex, endIndex);
+  const currentSpaces = spaces.slice(startIndex, endIndex); // ✅ Ahora spaces siempre será un array
 
   const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -62,22 +68,26 @@ export default function SpaceList({ spaces: propSpaces }) {
   };
 
   return (
-    <div className="h-auto w-full p-4">
+    <div className="h-64 w-full p-4">
       {/* Grid de espacios */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentSpaces.map((space) => (
-          <div key={space.id} className="border rounded-md p-4 bg-white shadow-sm">
-            <img
-              src={space.image || "https://via.placeholder.com/300"}
-              alt={space.nom}
-              className="w-full h-48 object-cover rounded-md mb-4"
-            />
-            <h3 className="text-xl font-semibold">{space.nom}</h3>
-            <p>{space.municipi}</p>
-            <p>{space.tipus}</p>
-            {renderStars(space.rating)}
-          </div>
-        ))}
+        {currentSpaces.map((space) => {
+          const averageRating = space.countScore > 0 ? space.totalScore / space.countScore : 0;
+
+          return (
+            <div key={space.id} className="border rounded-md p-4 bg-white shadow-sm">
+              <img
+                src={space.image || "https://via.placeholder.com/300"}
+                alt={space.nom}
+                className="w-full h-48 object-cover rounded-md mb-4"
+              />
+              <h3 className="text-xl font-semibold">{space.nom}</h3>
+              <p>{space.municipi}</p> { /* cogerlo de otra tabla no funciona por ahora */}
+              <p>{space.tipus}</p>
+              {renderStars(averageRating)}
+            </div>
+          );
+        })}
       </div>
 
       {/* Controles de paginación */}

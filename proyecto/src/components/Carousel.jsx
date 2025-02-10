@@ -6,18 +6,36 @@ export default function Carousel() {
   const [topRatedSpaces, setTopRatedSpaces] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Datos de ejemplo de los espacios
-  const spaces = [
-    { id: 1, nom: "Espacio 1", municipi: "Municipio 1", image: "https://via.placeholder.com/600", rating: 4.6 },
-    { id: 2, nom: "Espacio 2", municipi: "Municipio 2", image: "https://via.placeholder.com/600", rating: 3.5 },
-    { id: 3, nom: "Espacio 3", municipi: "Municipio 3", image: "https://via.placeholder.com/600", rating: 4.9 },
-    { id: 4, nom: "Espacio 4", municipi: "Municipio 4", image: "https://via.placeholder.com/600", rating: 4.1 },
-    { id: 5, nom: "Espacio 5", municipi: "Municipio 5", image: "https://via.placeholder.com/600", rating: 5 },
-  ];
-
+  // Realizar fetch para obtener los espacios desde el backend
   useEffect(() => {
-    const sortedSpaces = [...spaces].sort((a, b) => b.rating - a.rating);
-    setTopRatedSpaces(sortedSpaces.slice(0, 3));
+    const fetchTopRatedSpaces = async () => {
+      try {
+        const response = await fetch("http://baleart.test/api/space", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        // Calcular el rating como totalScore / countScore para cada espacio
+        const spacesWithRating = data.map(space => {
+          const rating = space.totalScore / space.countScore; // Calcular el rating
+          return { ...space, rating };
+        });
+
+        // Ordenar los espacios por calificación (rating) en orden descendente
+        const sortedSpaces = spacesWithRating.sort((a, b) => b.rating - a.rating);
+
+        // Limitar a los 3 mejores espacios
+        setTopRatedSpaces(sortedSpaces.slice(0, 3));
+      } catch (error) {
+        console.error("Error al obtener los espacios:", error);
+      }
+    };
+
+    fetchTopRatedSpaces();
   }, []);
 
   useEffect(() => {
